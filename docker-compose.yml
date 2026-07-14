@@ -1,0 +1,80 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cloudcart-api
+    restart: unless-stopped
+    environment:
+      APP_NAME: ${APP_NAME}
+      ENVIRONMENT: ${ENVIRONMENT}
+      DEBUG: ${DEBUG}
+      API_PREFIX: ${API_PREFIX}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - cloudcart-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudcart-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloudcart-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: cloudcart-redis
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - -a
+        - ${REDIS_PASSWORD}
+        - ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloudcart-network
+
+networks:
+  cloudcart-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
