@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     debug: bool = True
     api_prefix: str = "/api/v1"
 
+    database_url: str = (
+        "postgresql+psycopg://cloudcart:"
+        "cloudcart_local_password@localhost:5432/cloudcart"
+    )
+
+    redis_url: str = "redis://:cloudcart_redis_password@localhost:6379/0"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
