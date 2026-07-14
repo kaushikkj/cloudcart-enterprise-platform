@@ -1,0 +1,55 @@
+name: Repository CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  repository-validation:
+    name: Validate Repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required files
+        shell: bash
+        run: |
+          required_files=(
+            "README.md"
+            ".gitignore"
+            ".editorconfig"
+            "LICENSE"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+          done
+
+          echo "All required repository files are present."
+
+      - name: Check for accidentally committed secrets
+        shell: bash
+        run: |
+          if find . \
+            -path "./.git" -prune -o \
+            \( -name "*.pem" -o -name "*.key" -o -name "service-account*.json" \) \
+            -print | grep -q .; then
+            echo "Potential secret file detected."
+            exit 1
+          fi
+
+          echo "No obvious secret files detected."
