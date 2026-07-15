@@ -6,14 +6,33 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useMemo, useState } from "react";
 
 import ProductCard from "../components/products/ProductCard";
 import { products } from "../data/products";
 
+const ALL_PRODUCTS = "All products";
+
 export default function ProductsPage() {
-  const categories = Array.from(
-    new Set(products.map((product) => product.category)),
+  const [selectedCategory, setSelectedCategory] = useState(ALL_PRODUCTS);
+
+  const categories = useMemo(
+    () =>
+      Array.from(
+        new Set(products.map((product) => product.category)),
+      ).sort(),
+    [],
   );
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === ALL_PRODUCTS) {
+      return products;
+    }
+
+    return products.filter(
+      (product) => product.category === selectedCategory,
+    );
+  }, [selectedCategory]);
 
   return (
     <Container maxWidth="xl" sx={{ py: 6 }}>
@@ -40,7 +59,8 @@ export default function ProductsPage() {
         </Box>
 
         <Typography color="text.secondary">
-          {products.length} products available
+          {filteredProducts.length}{" "}
+          {filteredProducts.length === 1 ? "product" : "products"} available
         </Typography>
       </Stack>
 
@@ -57,41 +77,74 @@ export default function ProductsPage() {
         }}
       >
         <Chip
-          label="All products"
-          color="primary"
+          label={ALL_PRODUCTS}
+          clickable
+          color={
+            selectedCategory === ALL_PRODUCTS ? "primary" : "default"
+          }
+          variant={
+            selectedCategory === ALL_PRODUCTS ? "filled" : "outlined"
+          }
+          onClick={() => setSelectedCategory(ALL_PRODUCTS)}
           sx={{
             flexShrink: 0,
-            fontWeight: 700,
+            fontWeight:
+              selectedCategory === ALL_PRODUCTS ? 700 : 500,
           }}
         />
 
-        {categories.map((category) => (
-          <Chip
-            key={category}
-            label={category}
-            variant="outlined"
-            sx={{
-              flexShrink: 0,
-            }}
-          />
-        ))}
+        {categories.map((category) => {
+          const isSelected = selectedCategory === category;
+
+          return (
+            <Chip
+              key={category}
+              label={category}
+              clickable
+              color={isSelected ? "primary" : "default"}
+              variant={isSelected ? "filled" : "outlined"}
+              onClick={() => setSelectedCategory(category)}
+              sx={{
+                flexShrink: 0,
+                fontWeight: isSelected ? 700 : 500,
+              }}
+            />
+          );
+        })}
       </Stack>
 
-      <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid
-            key={product.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 4,
-              lg: 3,
-            }}
-          >
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-      </Grid>
+      {filteredProducts.length === 0 ? (
+        <Box
+          sx={{
+            py: 10,
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            No products found
+          </Typography>
+
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            Try selecting a different category.
+          </Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+          {filteredProducts.map((product) => (
+            <Grid
+              key={product.id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 4,
+                lg: 3,
+              }}
+            >
+              <ProductCard product={product} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 }
