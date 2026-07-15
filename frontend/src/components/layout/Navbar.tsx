@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
+import { useCart } from "../../context/CartContext";
 import type { ThemeMode } from "../../theme/theme";
 
 interface NavbarProps {
@@ -29,6 +30,7 @@ export default function Navbar({
   onToggleTheme,
 }: NavbarProps) {
   const isLight = mode === "light";
+  const { cartCount } = useCart();
 
   return (
     <AppBar
@@ -123,9 +125,13 @@ export default function Navbar({
               component={RouterLink}
               to="/cart"
               color="inherit"
-              aria-label="shopping cart"
+              aria-label={`shopping cart with ${cartCount} items`}
             >
-              <Badge badgeContent={0} color="secondary">
+              <Badge
+                badgeContent={cartCount}
+                color="secondary"
+                showZero
+              >
                 <ShoppingCartOutlinedIcon />
               </Badge>
             </IconButton>
