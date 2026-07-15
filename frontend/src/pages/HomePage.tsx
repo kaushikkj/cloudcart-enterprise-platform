@@ -10,7 +10,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 
 import ProductCard from "../components/products/ProductCard";
-import type { Product } from "../types/product";
+import { products } from "../data/products";
 
 const categories = [
   "Electronics",
@@ -19,44 +19,6 @@ const categories = [
   "Computers",
   "Home",
   "Accessories",
-];
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Noise-Cancelling Headphones",
-    category: "Audio",
-    price: 4999,
-    originalPrice: 6999,
-    rating: 4.6,
-    image: "https://picsum.photos/seed/cloudcart-headphones/700/500",
-  },
-  {
-    id: 2,
-    name: "AMOLED Smart Watch",
-    category: "Wearables",
-    price: 7499,
-    originalPrice: 9999,
-    rating: 4.4,
-    image: "https://picsum.photos/seed/cloudcart-watch/700/500",
-  },
-  {
-    id: 3,
-    name: "Mechanical Gaming Keyboard",
-    category: "Computers",
-    price: 6299,
-    rating: 4.8,
-    image: "https://picsum.photos/seed/cloudcart-keyboard/700/500",
-  },
-  {
-    id: 4,
-    name: "Portable Bluetooth Speaker",
-    category: "Audio",
-    price: 3999,
-    originalPrice: 4999,
-    rating: 4.5,
-    image: "https://picsum.photos/seed/cloudcart-speaker/700/500",
-  },
 ];
 
 export default function HomePage() {
@@ -120,7 +82,12 @@ export default function HomePage() {
                 <Stack
                   direction={{ xs: "column", sm: "row" }}
                   spacing={2}
-                  sx={{ alignItems: { xs: "stretch", sm: "center" } }}
+                  sx={{
+                    alignItems: {
+                      xs: "stretch",
+                      sm: "center",
+                    },
+                  }}
                 >
                   <Button
                     component={RouterLink}
@@ -162,7 +129,10 @@ export default function HomePage() {
                   <Box>
                     <Typography
                       variant="h5"
-                      sx={{ fontWeight: 800, color: "text.primary" }}
+                      sx={{
+                        fontWeight: 800,
+                        color: "text.primary",
+                      }}
                     >
                       10K+
                     </Typography>
@@ -175,7 +145,10 @@ export default function HomePage() {
                   <Box>
                     <Typography
                       variant="h5"
-                      sx={{ fontWeight: 800, color: "text.primary" }}
+                      sx={{
+                        fontWeight: 800,
+                        color: "text.primary",
+                      }}
                     >
                       5K+
                     </Typography>
@@ -188,7 +161,10 @@ export default function HomePage() {
                   <Box>
                     <Typography
                       variant="h5"
-                      sx={{ fontWeight: 800, color: "text.primary" }}
+                      sx={{
+                        fontWeight: 800,
+                        color: "text.primary",
+                      }}
                     >
                       24×7
                     </Typography>

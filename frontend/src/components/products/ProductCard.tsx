@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 import { useCart } from "../../context/CartContext";
 import type { Product } from "../../types/product";
@@ -41,10 +42,17 @@ export default function ProductCard({ product }: ProductCardProps) {
         }}
       >
         <CardMedia
-          component="img"
-          height="210"
+          component={RouterLink}
+          to={`/products/${product.id}`}
           image={product.image}
-          alt={product.name}
+          title={product.name}
+          sx={{
+            height: 210,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: "background.paper",
+            cursor: "pointer",
+          }}
         />
 
         <CardContent
@@ -63,15 +71,23 @@ export default function ProductCard({ product }: ProductCardProps) {
             }}
           />
 
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+          <Typography
+            component={RouterLink}
+            to={`/products/${product.id}`}
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: "text.primary",
+              textDecoration: "none",
+              "&:hover": {
+                color: "primary.main",
+              },
+            }}
+          >
             {product.name}
           </Typography>
 
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: 1 }}
-          >
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             ★ {product.rating}
           </Typography>
 
@@ -102,16 +118,24 @@ export default function ProductCard({ product }: ProductCardProps) {
             ) : null}
           </Stack>
 
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={handleAddToCart}
-            sx={{
-              mt: 2,
-            }}
-          >
-            Add to cart
-          </Button>
+          <Stack spacing={1.5} sx={{ mt: "auto", pt: 2 }}>
+            <Button
+              component={RouterLink}
+              to={`/products/${product.id}`}
+              variant="outlined"
+              fullWidth
+            >
+              View details
+            </Button>
+
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </Button>
+          </Stack>
         </CardContent>
       </Card>
 
