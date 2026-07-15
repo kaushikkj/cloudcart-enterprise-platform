@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
+import { CartProvider } from "./context/CartContext";
 import { getTheme, type ThemeMode } from "./theme/theme";
 
 function Root() {
@@ -30,7 +31,9 @@ function Root() {
       <CssBaseline />
 
       <BrowserRouter>
-        <App mode={mode} onToggleTheme={toggleTheme} />
+        <CartProvider>
+          <App mode={mode} onToggleTheme={toggleTheme} />
+        </CartProvider>
       </BrowserRouter>
     </ThemeProvider>
   );
