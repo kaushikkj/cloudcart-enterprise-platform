@@ -15,7 +15,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Link as RouterLink,
   useNavigate,
@@ -39,6 +39,11 @@ export default function ProductDetailsPage() {
   const product = products.find(
     (currentProduct) => currentProduct.id === productId,
   );
+
+  useEffect(() => {
+    setQuantity(1);
+    setShowMessage(false);
+  }, [productId]);
 
   if (!product) {
     return (
